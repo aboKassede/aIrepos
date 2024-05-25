@@ -21,7 +21,12 @@ jobs:
           submodules: true
           lfs: false
 
-      
+      - name: Install Node.js and Dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Dependencies
+        run: npm install -force
 
       # Add testing steps here if needed
 
