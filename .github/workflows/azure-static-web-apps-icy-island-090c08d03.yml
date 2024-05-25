@@ -15,53 +15,44 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      # Install apt-utils to avoid debconf warnings
-      - name: Install apt-utils
-        run: sudo apt-get update && sudo apt-get install -y apt-utils
-
-      # Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          submodules: true  # Check out submodules
-          lfs: false  # Don't fetch Git LFS files
+          submodules: true
+          lfs: false
 
-      # Install Node.js dependencies
-      - name: Install Node.js dependencies
-        run: npm install
+      - name: Install Node.js and Dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Dependencies
+        run: npm ci
 
-     
+      # Add testing steps here if needed
 
-      
-
-      
-
-      # Build and deploy the app if no high or critical vulnerabilities
       - name: Build and Deploy
         if: success()
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_TREE_0FB8D1010 }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}  # Used for GitHub integrations (e.g., PR comments)
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          app_location: "/"  # App source code path
-          api_location: ""  # API source code path - optional
-          output_location: "build"  # Built app content directory - optional
+          app_location: "/"
+          api_location: ""
+          output_location: "build"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     name: Close Pull Request Job
     steps:
-      # Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          submodules: true  # Check out submodules
-          lfs: false  # Don't fetch Git LFS files
+          submodules: true
+          lfs: false
 
-      # Close the pull request deployment
       - name: Close Pull Request Deployment
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
