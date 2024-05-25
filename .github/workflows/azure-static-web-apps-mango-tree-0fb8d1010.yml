@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
+      # Install apt-utils to avoid debconf warnings
+      - name: Install apt-utils
+        run: sudo apt-get update && sudo apt-get install -y apt-utils
+
       # Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -39,6 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Close Pull Request Job
     steps:
+      # Install apt-utils to avoid debconf warnings
+      - name: Install apt-utils
+        run: sudo apt-get update && sudo apt-get install -y apt-utils
+
       # Close the pull request deployment
       - name: Close Pull Request Deployment
         id: closepullrequest
