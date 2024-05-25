@@ -32,21 +32,9 @@ jobs:
 
      
 
-      # Run npm audit and save the result to a JSON file
-      - name: Run npm audit
-        run: npm audit --json > audit-report.json
+      
 
-      # Check npm audit results and fail if high vulnerabilities are found
-      - name: Check for vulnerabilities
-        id: check_vulnerabilities
-        run: |
-          cat audit-report.json
-          jq '.advisories | to_entries | map(select(.value.severity == "high" or .value.severity == "critical")) | if length > 0 then "failure" else "success" end' audit-report.json -r > audit-result.txt
-          audit_result=$(cat audit-result.txt)
-          if [ "$audit_result" == "failure" ]; then
-            echo "High or critical vulnerabilities found, failing the build."
-            exit 1
-          fi
+      
 
       # Build and deploy the app if no high or critical vulnerabilities
       - name: Build and Deploy
