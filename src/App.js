@@ -24,7 +24,7 @@ function App() {
           src = {result?.url ? result.url : imageUrl}
           alt="upload"
           ></img>
-          <pre>{JSON.stringify(result,null,2)} </pre>
+          <pre>{JSON.stringify(result,null,2 )} </pre>
       </div>
     );
   };
