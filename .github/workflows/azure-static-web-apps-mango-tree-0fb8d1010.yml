@@ -26,6 +26,14 @@ jobs:
           submodules: true  # Check out submodules
           lfs: false  # Don't fetch Git LFS files
 
+      # Install Node.js dependencies
+      - name: Install Node.js dependencies
+        run: npm install
+
+      # Run npm audit to check for vulnerabilities
+      - name: Audit Node.js dependencies
+        run: npm audit
+
       # Build and deploy the app
       - name: Build and Deploy
         id: builddeploy
