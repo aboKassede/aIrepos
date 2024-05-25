@@ -34,11 +34,17 @@ jobs:
       - name: Audit and Fix Node.js dependencies
         run: npm audit fix
 
-      # Run npm audit fix --force and capture the output
-      - name: Force Audit and Fix Node.js dependencies
+      # Run npm audit to ensure no high or critical issues remain
+      - name: Audit Check
+        id: audit-check
+        run: npm audit --json > audit-report.json
+
+      # Conditionally run npm audit fix --force based on audit results
+      - name: Conditional Audit Fix Force
+        if: steps.audit-check.outputs.audit-result == 'failure'
         run: |
-          npm audit fix --force
-        continue-on-error: true
+          echo "Critical or high vulnerabilities detected, running npm audit fix --force"
+          npm audit fix --force || exit 0
 
       # Build and deploy the app
       - name: Build and Deploy
