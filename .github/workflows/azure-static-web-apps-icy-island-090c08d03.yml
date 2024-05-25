@@ -34,20 +34,25 @@ jobs:
       - name: Audit and Fix Node.js dependencies
         run: npm audit fix
 
-      # Run npm audit to ensure no high or critical issues remain
-      - name: Audit Check
-        id: audit-check
+      # Run npm audit and save the result to a JSON file
+      - name: Run npm audit
         run: npm audit --json > audit-report.json
 
-      # Conditionally run npm audit fix --force based on audit results
-      - name: Conditional Audit Fix Force
-        if: steps.audit-check.outputs.audit-result == 'failure'
+      # Check npm audit results and fail if high vulnerabilities are found
+      - name: Check for vulnerabilities
+        id: check_vulnerabilities
         run: |
-          echo "Critical or high vulnerabilities detected, running npm audit fix --force"
-          npm audit fix --force || exit 0
+          cat audit-report.json
+          jq '.advisories | to_entries | map(select(.value.severity == "high" or .value.severity == "critical")) | if length > 0 then "failure" else "success" end' audit-report.json -r > audit-result.txt
+          audit_result=$(cat audit-result.txt)
+          if [ "$audit_result" == "failure" ]; then
+            echo "High or critical vulnerabilities found, failing the build."
+            exit 1
+          fi
 
-      # Build and deploy the app
+      # Build and deploy the app if no high or critical vulnerabilities
       - name: Build and Deploy
+        if: success()
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
