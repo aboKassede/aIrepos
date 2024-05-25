@@ -30,9 +30,7 @@ jobs:
       - name: Install Node.js dependencies
         run: npm install
 
-      # Run npm audit fix to address non-breaking issues
-      - name: Audit and Fix Node.js dependencies
-        run: npm audit fix
+     
 
       # Run npm audit and save the result to a JSON file
       - name: Run npm audit
